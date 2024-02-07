@@ -10,8 +10,7 @@ def filter_datum(
         ) -> str:
     """Returns the log message obfuscated."""
     for field in fields:
-        pattern = rf"{field}=.*?{separator}"
-        replacement = f"{field}={redaction}{separator}"
-        message = re.sub(pattern, replacement, message)
+        message = re.sub(rf"{field}=.*?{separator}",
+                         f"{field}={redaction}{separator}", message)
 
     return message
