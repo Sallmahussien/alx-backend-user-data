@@ -30,6 +30,7 @@ def get_logger() -> logging.Logger:
     handler.setLevel(logging.INFO)
     handler.setFormatter(RedactingFormatter(PII_FIELDS))
 
+    logger.setLevel(logging.INFO)
     logger.addHandler(handler)
 
     return logger
@@ -51,6 +52,27 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
     )
 
 
+def main() -> None:
+    """
+    Obtain a database connection using get_db and retrieve all rows in
+    the users table and display each row under a filtered format
+    """
+    logger = get_logger()
+
+    connector = get_db()
+    cursor = connector.cursor()
+
+    cursor.execute('SELECT * FROM `users`;')
+    users = cursor.fetchall()
+
+    column_names = cursor.column_names
+
+    for user in users:
+        formatted_user = "".join(f"{attribute}={value}; " for
+                                 attribute, value in zip(column_names, user))
+        logger.info(formatted_user)
+
+
 class RedactingFormatter(logging.Formatter):
     """ Redacting Formatter class
     """
@@ -67,3 +89,7 @@ class RedactingFormatter(logging.Formatter):
         """Formats a LogRecord."""
         msg = super(RedactingFormatter, self).format(record)
         return filter_datum(self.fields, self.REDACTION, msg, self.SEPARATOR)
+
+
+if __name__ == '__main__':
+    main()
