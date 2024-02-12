@@ -57,11 +57,9 @@ class BasicAuth(Auth):
                                      user_pwd: str) -> TypeVar('User'):
         """Get user using email and password"""
         if user_email is None or not isinstance(user_email, str):
-            print("hello")
             return None
 
         if user_pwd is None or not isinstance(user_pwd, str):
-            print('hi')
             return None
 
         users = User().search({'email': user_email})
