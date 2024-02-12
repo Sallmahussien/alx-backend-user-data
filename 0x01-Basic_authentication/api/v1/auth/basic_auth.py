@@ -2,6 +2,7 @@
 """Defines basic_auth module"""
 
 from .auth import Auth
+import base64
 
 
 class BasicAuth(Auth):
@@ -18,3 +19,18 @@ class BasicAuth(Auth):
             return None
 
         return authorization_header[6:]
+
+    def decode_base64_authorization_header(
+            self,
+            base64_authorization_header: str
+            ) -> str:
+        """Decode base64 header"""
+        if (base64_authorization_header is None
+                or type(base64_authorization_header) is not str):
+            return None
+
+        try:
+            decoded_bytes = base64.b64decode(base64_authorization_header)
+            return decoded_bytes.decode('utf-8')
+        except base64.binascii.Error:
+            return None
