@@ -39,7 +39,7 @@ class BasicAuth(Auth):
             self,
             decoded_base64_authorization_header: str
             ) -> (str, str):
-        """"""
+        """Extract username and password"""
         if (decoded_base64_authorization_header is None
                 or not isinstance(decoded_base64_authorization_header, str)):
             return None, None
