@@ -2,7 +2,9 @@
 """Defines basic_auth module"""
 
 from .auth import Auth
+from models.user import User
 import base64
+from typing import TypeVar
 
 
 class BasicAuth(Auth):
@@ -50,3 +52,28 @@ class BasicAuth(Auth):
             return None, None
 
         return tuple(user_credentials)
+
+    def user_object_from_credentials(self, user_email: str,
+                                     user_pwd: str) -> TypeVar('User'):
+        """Get user using email and password"""
+        if user_email is None or not isinstance(user_email, str):
+            print("hello")
+            return None
+
+        if user_pwd is None or not isinstance(user_pwd, str):
+            print('hi')
+            return None
+
+        users = User().search({'email': user_email})
+
+        if not users:
+            return None
+
+        user = users[0]
+
+        is_valid_pwd = user.is_valid_password(user_pwd)
+
+        if not is_valid_pwd:
+            return None
+
+        return user
