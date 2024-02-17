@@ -7,6 +7,7 @@ from flask import jsonify, request
 from models.user import User
 import os
 
+
 @app_views.route('/auth_session/login', methods=['POST'], strict_slashes=False)
 def authorize_session() -> str:
     """Implement login route"""
@@ -14,22 +15,22 @@ def authorize_session() -> str:
     password = request.form.get('password')
 
     if not email:
-        return jsonify({ "error": "email missing" }), 400
-    
+        return jsonify({"error": "email missing"}), 400
+
     if not password:
-        return jsonify({ "error": "password missing" }), 400
-    
+        return jsonify({"error": "password missing"}), 400
+
     users = User().search({'email': email})
     if not users:
-        return jsonify({ "error": "no user found for this email" }), 404
+        return jsonify({"error": "no user found for this email"}), 404
 
     user = users[0]
 
     is_valid_pwd = user.is_valid_password(password)
 
     if not is_valid_pwd:
-        return jsonify({ "error": "wrong password" }), 401
-    
+        return jsonify({"error": "wrong password"}), 401
+
     from api.v1.app import auth
     sessionId = auth.create_session(user.id)
     user_response = jsonify(user.to_json())
