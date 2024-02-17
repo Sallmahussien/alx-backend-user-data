@@ -23,6 +23,8 @@ if auth_type == 'basic_auth':
     auth = BasicAuth()
 elif auth == 'session_auth':
     auth = SessionAuth()
+    session_name = getenv('SESSION_NAME')
+    request.set('_my_session_id', session_name)
 elif auth_type:
     auth = Auth()
 
