@@ -3,6 +3,7 @@
 
 from api.v1.auth.session_exp_auth import SessionExpAuth
 from models.user_session import UserSession
+from datetime import datetime, timedelta
 
 
 class SessionDBAuth(SessionExpAuth):
@@ -28,7 +29,18 @@ class SessionDBAuth(SessionExpAuth):
             return None
 
         user = users[0]
+        if not self.is_session_expired(user.created_at):
+            return None
+
         return user.user_id
+    
+    def is_session_expired(self, created_at):
+        """Checks if a session is expired"""
+        if self.session_duration <= 0:
+            return True
+
+        expiration_time = created_at + timedelta(seconds=self.session_duration)
+        return expiration_time >= datetime.now()
 
     def destroy_session(self, request=None):
         """Destroys UserSession based on the Session_ID from request cookie"""
@@ -43,6 +55,6 @@ class SessionDBAuth(SessionExpAuth):
 
         user = users[0]
         user.remove()
-        UserSession.save()
+        UserSession.save_to_file()
 
         return True
