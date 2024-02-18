@@ -46,7 +46,7 @@ class SessionExpAuth(SessionAuth):
     def is_session_expired(self, created_at):
         """Checks if a session is expired"""
         if self.session_duration <= 0:
-            return False
+            return True
 
         expiration_time = created_at + timedelta(seconds=self.session_duration)
         return expiration_time >= datetime.now()
