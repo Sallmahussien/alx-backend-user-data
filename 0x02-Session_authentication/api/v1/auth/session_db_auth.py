@@ -33,7 +33,7 @@ class SessionDBAuth(SessionExpAuth):
             return None
 
         return user.user_id
-    
+
     def is_session_expired(self, created_at):
         """Checks if a session is expired"""
         if self.session_duration <= 0:
