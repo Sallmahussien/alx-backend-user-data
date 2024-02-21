@@ -68,6 +68,16 @@ class Auth:
         except ValueError:
             return None
 
+    def get_reset_password_token(self, email: str) -> str:
+        """Generate reset password token"""
+        try:
+            user = self._db.find_user_by(email=email)
+            session_id = _generate_uuid()
+            self._db.update_user(user.id, session_id=session_id)
+            return session_id
+        except NoResultFound:
+            raise ValueError
+
 
 def _hash_password(password: str) -> bytes:
     """Returns a salted, hashed password"""
