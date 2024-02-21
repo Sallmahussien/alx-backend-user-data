@@ -82,13 +82,14 @@ class Auth:
         """Hashes password and upadtes it in db"""
         try:
             user = self._db.find_user_by(reset_token=reset_token)
-            new_hashed_password = _hash_password(password)
-            self._db.update_user(user.id,
-                                 hashed_password=new_hashed_password,
-                                 reset_token=None)
-            return None
         except NoResultFound:
             raise ValueError()
+
+        new_hashed_password = _hash_password(password)
+        self._db.update_user(user.id,
+                             hashed_password=new_hashed_password,
+                             reset_token=None)
+        return None
 
 
 def _hash_password(password: str) -> bytes:
